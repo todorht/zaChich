@@ -4,43 +4,36 @@
     <title>WP Exam</title>
 </head>
 <body>
-<!-- The form should submit to ProductsController.create or  ProductsController.update, depending on whether we are
-creating or editing a product -->
-<form method="POST" th:action="@{'/products/{id}' (id=${product?.id})}">
+<!-- The form should submit to MenuController.create or  MenuController.update, depending on whether we are
+creating or editing a menu -->
+<form th:method="POST" th:action="@{'/menu/{id}' (id=${menu?.id})}">
     <div>
-        <label for="name">Name</label>
+        <label for="restaurantName">Restaurant Name</label>
         <input type="text"
-               id="name"
+               id="restaurantName"
                name="name"
-               th:value="${product?.name}"
+               th:value="${menu?.restaurantName}"
                required>
     </div>
+
     <div>
-        <label for="price">Price</label>
-        <input type="number"
-               id="price"
-               name="price"
-               th:value="${product?.price}"
-               required>
-    </div>
-    <div>
-        <label for="quantity">Quantity</label>
-        <input type="number"
-               id="quantity"
-               name="quantity"
-               th:value="${product?.quantity}"
-               required>
-    </div>
-    <div>
-        <label>Category</label><br/>
-        <select id="categories" name="categories" multiple="multiple" size="5">
+        <label>Menu Type</label><br/>
+        <select id="menuType" name="menuType">
             <!-- For each category you should have one <option> like below  -->
-            <option th:each="cat : ${cat}" th:value="${cat.id}" th:text="${cat.name}"></option>
+            <option th:each="type: ${menuTypes}" th:value="${type.name()}" th:text="${type.name()}"> </option>
+        </select>
+    </div>
+
+    <div>
+        <label>Menu Items</label><br/>
+        <select id="menuItemsIds" name="menuItemIds" multiple="multiple" size="5">
+            <!-- For each category you should have one <option> like below  -->
+            <option th:each="items:${menuItems}" th:value="${items.id}" th:text="${items.name}">    </option>
         </select>
     </div>
 
     <button id="submit" type="submit">Submit</button>
-    <a id="back" href="/products" type="button" class="btn btn-primary">Back to products</a>
+    <a id="back" href="/menu" type="button" class="btn btn-primary">Back to menus</a>
 </form>
 
 <div>

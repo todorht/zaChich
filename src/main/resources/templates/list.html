@@ -6,53 +6,48 @@
 <body>
 
 <div>
-    <!-- The form below should invoke the method ProductsController.showProducts -->
+    <!-- The form below should invoke the method MenuController.showMenus -->
     <form id="filter-form" th:method="GET" action="/" >
 
-        <label for="nameSearch">Name</label>
+        <label for="nameSearch">Restaurant Name</label>
         <input id="nameSearch" type="text" name="nameSearch"/>
-        <label for="categoryId">Category</label>
-        <select id="categoryId" name="categoryId">
+        <select id="menuType" name="menuType">
             <option value="">All</option>
-            <!-- For each category you should have one <option> like below  -->
-            <option th:each="cat : ${cat}" th:value="${cat.id}" th:text="${cat.name}"></option>
+            <!-- For each menu type you should have one <option> like below  -->
+            <option th:each="type :${menuTypes}" th:value="${type.name()}" th:text="${type.name()}"></option>
         </select>
         <button id="filter" type="submit">Filter</button>
     </form>
     <div>
-        <!-- ProductsController.showAdd -->
-        <a href="/products/add" sec:authorize="hasRole('ROLE_ADMIN')" class="add-item">
-            Add new product
+        <!-- MenuController.showAdd -->
+        <a sec:authorize="hasRole('ROLE_ADMIN')" href="/menu/add" class="add-item" >
+            Add new menu
         </a>
     </div>
     <table>
         <tr>
-            <th>Product name</th>
-            <th>Price</th>
-            <th>Quantity</th>
-            <th>Categories</th>
-            <th>Creator</th>
+            <th>Restaurant name</th>
+            <th>Menu Type</th>
+            <th>Menu Items</th>
             <th>Actions</th>
         </tr>
-        <!-- For each product you should have one <tr> like below -->
-        <tr class="item" th:each="prod:${products}">
-            <td th:text="${prod.name}"></td>
-            <td th:text="${prod.price}"></td>
-            <td th:text="${prod.quantity}"></td>
+        <!-- For each menu you should have one <tr> like below -->
+        <tr class="item" th:each="menu:${menus}">
+            <td th:text="${menu.restaurantName}"></td>
+            <td th:text="${menu.menuType.name()}"></td>
             <td>
                 <ul>
-                    <!-- For each product's category you should display one <li> element like the one below -->
-                    <li th:each="cat : ${prod.categories}" th:text="${cat.name}"></li>
+                    <!-- For each menu's item you should display one <li> element like the one below -->
+                    <li th:each="items:${menu.menuItems}" th:text="${items.name}"></li>
                 </ul>
             </td>
-            <td th:text="${prod.creator?.username}"></td>
             <td>
-                <!-- ProductsController.delete -->
-                <form th:method="POST" th:action="@{'/products/{id}/delete' (id=${prod.getId()})}">
-                    <button sec:authorize="hasRole('ROLE_ADMIN')" type="submit" class="delete-item">Delete</button>
+                <!-- MenuController.delete -->
+                <form th:method="POST" th:action="@{'/menu/{id}/delete' (id=${menu.getId()})}">
+                    <button sec:authorize="hasRole('ROLE_ADMIN')" type="submit" class="delete-item"  >Delete</button>
                 </form>
-                <!-- ProductsController.showEdit -->
-                <a th:href="@{'/products/{id}/edit' (id=${prod.getId()})}" sec:authorize="hasRole('ROLE_ADMIN')" class="edit-item">Edit</a>
+                <!-- MenuController.showEdit -->
+                <a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{'/menu/{id}/edit' (id=${menu.getId()})}" class="edit-item">Edit</a>
             </td>
         </tr>
     </table>

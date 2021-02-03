@@ -21,6 +21,7 @@ public class SubmissionHelper {
 
     public static ObjectMapper objectMapper = new ObjectMapper();
     public static ArrayList<String> log = new ArrayList<>();
+    public static ArrayList<Exception> errors = new ArrayList<>();
     public static boolean hasError = false;
     public static String test;
 
@@ -47,6 +48,8 @@ public class SubmissionHelper {
 
     public static void startTest(String testName) {
         test = testName;
+        hasError = false;
+        log.clear();
         log.add(String.format("S;%s;Started", testName));
     }
 
@@ -54,7 +57,10 @@ public class SubmissionHelper {
     public static void endTest() {
         log.add(String.format("E;%s;%s", test, hasError ? "FAILED" : "PASSED"));
         test = null;
-        hasError = false;
+        if (hasError) {
+            logErrors();
+            throw new ExamAssertionException(test + " failed", "PASSED", "FAILED");
+        }
     }
 
     public static void submitSuccessAssert(String message, Object expected, Object actual) {
@@ -63,6 +69,14 @@ public class SubmissionHelper {
 
     public static void submitFailedAssert(String message, Object expected, Object actual) {
         log.add(String.format("X;%s;%s:\texpected: <%s>\tactual:\t<%s>", test, message, expected.toString(), actual.toString()));
+        errors.add(new ExamAssertionException(message, expected, actual));
+        hasError = true;
+    }
+
+    public static void logErrors() {
+        for (Exception error : errors) {
+            error.printStackTrace();
+        }
     }
 
 
